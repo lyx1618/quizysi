@@ -523,4 +523,4 @@ signal.signal(signal.SIGINT, shutdown_signal_handler)
 signal.signal(signal.SIGTERM, shutdown_signal_handler)
 
 # Run the bot with your token
-bot.run("MTMyNTcxODU4NDc2ODMzMTgzOQ.G8o8KV.3wRj-ueQ3vFqHt3_6c-L-zvXWEx-2nbuKxxgKc")
+bot.run(BOT_TOKEN)
