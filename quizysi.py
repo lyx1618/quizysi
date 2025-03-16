@@ -37,7 +37,7 @@ track_727_always = False
 
 # Load data
 material = []
-with open("quizysi/luke_plain.txt", "r") as file:
+with open("home.container/luke_plain.txt", "r") as file:
     info = file.read()
 
 verse = info.splitlines()
