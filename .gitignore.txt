@@ -1,5 +1,5 @@
 # Ignore .env file
-.env
+.ini
 
 # Ignore Python virtual environment
 venv/
