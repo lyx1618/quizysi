@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.INFO)
 intents = discord.Intents.default()
 intents.message_content = True  # Enable message content intent
 intents.members = True  # Enable members intent if you need member data like joins/roles
-bot = commands.Bot(command_prefix="!", intents=intents, help_commands=None)
+bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
 
 # Time zone setup (Eastern Standard Time)
 est_tz = pytz.timezone("US/Eastern")
