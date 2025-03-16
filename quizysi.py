@@ -513,7 +513,7 @@ async def endseason(ctx):
     logging.info(f"Season reset to S{last_reset['season']}.")
 
     await ctx.send(f"Season has ended and leaderboard updated.")
-
+'''
 @bot.command()
 async def help(ctx):
     """
@@ -547,7 +547,7 @@ quizbot
 
     # Send the help message to the user
     await ctx.send(help_message)
-
+'''
 def shutdown_signal_handler(signal, frame):
     save_data(season_points, total_points, last_reset, historical_seasons)
     logging.info("Data saved. Bot is shutting down.")
