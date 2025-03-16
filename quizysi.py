@@ -514,6 +514,40 @@ async def endseason(ctx):
 
     await ctx.send(f"Season has ended and leaderboard updated.")
 
+@bot.command()
+async def help(ctx):
+    """
+    Displays a list of available commands and their descriptions.
+    """
+    help_message = """
+**Bot Commands:**
+cookiezisus
+
+1. **!help** - Displays this help message.
+2. **!leaderboard** - Shows the current season and all-time leaderboards.
+6. **!aslan** - A fun command.
+7. **!alex** - A fun command.
+8. **!andy** - A fun command.
+9. **!spark** - A fun command.
+
+quizbot
+
+1. **!f {phrase}** - Shows the verse/reference of all instances of that phrase occuring in the text
+2. **!kw {1-3}** - Returns a random one, two, or three word key and its verse/reference. Leave blank for random
+3. **!ma** - Returns a random multiple answer question from the doc.
+
+**How Points Work:**
+- If `track_727_always` is enabled, each `727` message awards **1 point**.
+- If `track_727_always` is disabled, points are awarded only at `7:27 AM` or `7:27 PM`:
+  - **First user**: 2 points.
+  - **Last user**: 0 points.
+  - **Users in between**: 1 point.
+
+"""
+
+    # Send the help message to the user
+    await ctx.send(help_message)
+
 def shutdown_signal_handler(signal, frame):
     save_data(season_points, total_points, last_reset, historical_seasons)
     logging.info("Data saved. Bot is shutting down.")
