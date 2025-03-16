@@ -10,6 +10,11 @@ import asyncio
 import pandas as pd
 import random
 from collections import Counter
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
