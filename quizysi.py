@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.INFO)
 intents = discord.Intents.default()
 intents.message_content = True  # Enable message content intent
 intents.members = True  # Enable members intent if you need member data like joins/roles
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents, help_commands=None)
 
 # Time zone setup (Eastern Standard Time)
 est_tz = pytz.timezone("US/Eastern")
@@ -513,7 +513,7 @@ async def endseason(ctx):
     logging.info(f"Season reset to S{last_reset['season']}.")
 
     await ctx.send(f"Season has ended and leaderboard updated.")
-'''
+
 @bot.command()
 async def help(ctx):
     """
@@ -547,7 +547,7 @@ quizbot
 
     # Send the help message to the user
     await ctx.send(help_message)
-'''
+
 def shutdown_signal_handler(signal, frame):
     save_data(season_points, total_points, last_reset, historical_seasons)
     logging.info("Data saved. Bot is shutting down.")
