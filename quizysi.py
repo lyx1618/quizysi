@@ -408,7 +408,7 @@ async def toggle(ctx):
 
 @bot.command()
 async def time(ctx):
-    current_time = datetime.now(pytz.utc).astimezone(est_tz).strftime('%I:%M %p')
+    global current_time
     await cts.send(current_time)
 
 @bot.command()
