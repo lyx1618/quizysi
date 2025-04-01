@@ -409,7 +409,7 @@ async def toggle(ctx):
 @bot.command()
 async def time(ctx):
     global current_time
-    await cts.send(current_time)
+    await ctx.send(current_time)
 
 @bot.command()
 async def kw(ctx, n=0):
