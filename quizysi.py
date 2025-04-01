@@ -531,17 +531,17 @@ async def help(ctx):
     """
     help_message = """
 **Bot Commands:**
-cookiezisus
 
+_cookiezisus_
 1. **!help** - Displays this help message.
 2. **!leaderboard** - Shows the current season and all-time leaderboards.
-6. **!aslan** - A fun command.
-7. **!alex** - A fun command.
-8. **!andy** - A fun command.
-9. **!spark** - A fun command.
+3. **!time** - Displays the current time.
+4. **!aslan** - A fun command.
+5. **!alex** - A fun command.
+6. **!andy** - A fun command.
+7. **!spark** - A fun command.
 
-quizbot
-
+_quizbot_
 1. **!f {phrase}** - Shows the verse/reference of all instances of that phrase occuring in the text
 2. **!kw {1-3}** - Returns a random one, two, or three word key and its verse/reference. Leave blank for random
 3. **!ma** - Returns a random multiple answer question from the doc.
