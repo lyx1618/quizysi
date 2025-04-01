@@ -405,7 +405,12 @@ async def toggle(ctx):
     status = "enabled" if track_727_always else "disabled"
     await ctx.send(f"727 tracking is now {status}.")
     logging.info(f"727 tracking {status} by {ctx.author}")
-    
+
+@bot.command()
+async def time(ctx):
+    current_time = datetime.now(pytz.utc).astimezone(est_tz).strftime('%I:%M %p')
+    await cts.send(current_time)
+
 @bot.command()
 async def kw(ctx, n=0):
     if n == 0:
