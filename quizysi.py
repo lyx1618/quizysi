@@ -23,7 +23,7 @@ logging.basicConfig(level=logging.INFO)
 intents = discord.Intents.default()
 intents.message_content = True  # Enable message content intent
 intents.members = True  # Enable members intent if you need member data like joins/roles
-bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
+bot = commands.Bot(command_prefix="bq", intents=intents, help_command=None)
 
 # Time zone setup (Eastern Standard Time)
 est_tz = pytz.timezone("US/Eastern")
@@ -146,41 +146,56 @@ def versequery(book, chapter, verse):
     quote = quote.to_string(index=False, header=False)
     return quote + '\n(' + book + ' ' + str(chapter) + ':' + str(verse) + ')'
 
-# Find verse based on keywords
-def wordquery(words, limit = 10):
+def wordquery(words, limit=10, chapter=None):
     if not words:
         return f"https://tenor.com/view/think-meme-thinking-memes-memes-2024-gif-6703217797690493255"
     
-    # If `words is a single string, split it into a list of words
+    # If words is a single string, split it into a list of words
     if isinstance(words, str):
         words = words.split()
     
-    # Create a regex pattern to match the entire phrase (all words together)
-    phrase_pattern = r'\b' + re.escape(" ".join(words)) + r'\b'
+    # Build regex pattern for each word, handling hyphens
+    word_patterns = []
+    for word in words:
+        if word.endswith('-'):
+            # For partial words (ending with hyphen), match as prefix
+            base_word = re.escape(word[:-1])
+            word_patterns.append(rf'\b{base_word}\w*')
+        else:
+            # For complete words, match exactly
+            word_patterns.append(rf'\b{re.escape(word)}\b')
     
-    # Find rows where the quote contains the entire phrase (case-insensitive)
+    # Combine patterns with word boundaries and optional whitespace
+    phrase_pattern = r'\s+'.join(word_patterns)
+    
+    # Start with all rows that match the phrase
     matches = df[df['quote'].str.contains(phrase_pattern, case=False, regex=True)]
     
-    # If no matches are found, return a message
+    # If a specific chapter is requested, filter further
+    if chapter is not None:
+        matches = matches[matches['chapter'] == chapter]
+        
     if matches.empty:
-        return f"No quotes found containing the phrase: '{' '.join(words)}'"
+        if chapter is not None:
+            return f"No quotes found matching '{' '.join(words)}' in chapter {chapter}"
+        return f"No quotes found matching: '{' '.join(words)}'"
     
-    # Extract book, chapter, and verse information for the matching rows
+    # Extract book, chapter, and verse information
     to_query = matches[['book', 'chapter', 'verse']].values.tolist()
     
-    # Query and collect results for each match (up to the specified limit)
+    # Query and collect results
     results = []
     for i, values in enumerate(to_query):
-        if i >= limit:  # Stop after reaching the limit
+        if i >= limit:
             return f"Way too many"
         book, chapter, verse = values
         result = versequery(book, chapter, verse)
         
-        # Bold the entire phrase in the result (case-insensitive)
-        result = re.sub(phrase_pattern, r"**\g<0>**", result, flags=re.IGNORECASE)
+        # Bold all matches of any word pattern
+        for pattern in word_patterns:
+            result = re.sub(pattern, r"**\g<0>**", result, flags=re.IGNORECASE)
         results.append(result)
     
-    # Return all results as a single string
     return "\n\n".join(results)
     
 # Create MA question
