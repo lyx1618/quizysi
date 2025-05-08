@@ -444,8 +444,26 @@ async def kw(ctx, n=0):
     await ctx.send(prompt)
 
 @bot.command()
-async def f(ctx, *, word=""):
-    await ctx.send(wordquery(word))
+async def f(ctx, *, args=""):
+    # Split input into search terms and optional chapter number
+    parts = args.split()
+    chapter = None
+    
+    # Check if last part is a number (chapter)
+    if len(parts) > 1 and parts[-1].isdigit():
+        chapter = int(parts[-1])
+        words = ' '.join(parts[:-1])
+    else:
+        words = args
+    
+    # Handle empty input
+    if not words.strip():
+        await ctx.send(f"https://tenor.com/view/ken-jeong-community-too-small-to-read-read-reading-gif-5494204")
+        return
+    
+    # Process the query
+    result = wordquery(words, chapter=chapter)
+    await ctx.send(result)
     
 @bot.command()
 async def ma(ctx):
@@ -548,16 +566,16 @@ async def help(ctx):
 **Bot Commands:**
 
 _cookiezisus_
-1. **!help** - Displays this help message.
-2. **!leaderboard** - Shows the current season and all-time leaderboards.
-3. **!time** - Displays the current time.
-4. **!aslan** - A fun command.
-5. **!alex** - A fun command.
-6. **!andy** - A fun command.
-7. **!spark** - A fun command.
+1. **bqhelp** - Displays this help message.
+2. **bqleaderboard** - Shows the current season and all-time leaderboards.
+3. **bqtime** - Displays the current time.
+4. **bqaslan** - A fun command.
+5. **bqalex** - A fun command.
+6. **bqandy** - A fun command.
+7. **bqspark** - A fun command.
 
 _quizbot_
-1. **!f {phrase}** - Shows the verse/reference of all instances of that phrase occuring in the text
+1. **bqf {phrase} {chapter}** - Shows the verse/reference of all instances of that phrase occuring in the text, chapter reference and partial words is optional (use hyphen).
 2. **!kw {1-3}** - Returns a random one, two, or three word key and its verse/reference. Leave blank for random
 3. **!ma** - Returns a random multiple answer question from the doc.
 
