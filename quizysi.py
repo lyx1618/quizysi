@@ -444,8 +444,26 @@ async def kw(ctx, n=0):
     await ctx.send(prompt)
 
 @bot.command()
-async def f(ctx, *, word=""):
-    await ctx.send(wordquery(word))
+async def f(ctx, *, args=""):
+    # Split input into search terms and optional chapter number
+    parts = args.split()
+    chapter = None
+    
+    # Check if last part is a number (chapter)
+    if len(parts) > 1 and parts[-1].isdigit():
+        chapter = int(parts[-1])
+        words = ' '.join(parts[:-1])
+    else:
+        words = args
+    
+    # Handle empty input
+    if not words.strip():
+        await ctx.send(f"https://tenor.com/view/ken-jeong-community-too-small-to-read-read-reading-gif-5494204")
+        return
+    
+    # Process the query
+    result = wordquery(words, chapter=chapter)
+    await ctx.send(result)
     
 @bot.command()
 async def ma(ctx):
