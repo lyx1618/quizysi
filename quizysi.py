@@ -195,10 +195,12 @@ def wordquery(words, limit=10, chapter=None):
         book, chapter, verse = values
         result = versequery(book, chapter, verse)
         
-        # Bold all matches of any word pattern
-        patterns = [r"\b" + re.escape(phrase) + r"\b" for phrase in words]
-        for pattern in patterns:
-            result = re.sub(pattern, r"**\g<0>**", result, flags=re.IGNORECASE)
+        # Find the exact match in the result using the same regex
+        match = re.search(phrase_pattern, result, flags=re.IGNORECASE)
+        if match:
+            # Bold only the complete matched phrase
+            matched_phrase = match.group(0)
+            result = result.replace(matched_phrase, f"**{matched_phrase}**")
         results.append(result)
     
     return "\n\n".join(results)
@@ -212,10 +214,13 @@ def multans():
     ma_list = pd.read_csv(url)
     pool = ma_list["Question"].tolist()
     
-    # Select a random index
-    seed = random.randint(1,len(ma_list) - 1)
-    select_prompt = pool[seed].split('>>')
-    ans = ma_list.iat[seed,2]
+     # Random selection
+    seed = random.randint(0, len(ma_list) - 1)
+    selected_row = ma_list.iloc[seed]
+    
+    # Split question and get answer
+    select_prompt = selected_row["Question"].split('>>')
+    ans = selected_row.iloc[2]   
     
     # TEMPORARY CODE
     ref = ma_list.iat[seed,0].replace(' ',':').split(':')
