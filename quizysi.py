@@ -173,8 +173,12 @@ def wordquery(words, limit=10, chapter=None):
     
     # If a specific chapter is requested, filter further
     if chapter is not None:
+        # Get all unique chapters in the dataframe
+        available_chapters = df['chapter'].unique()
+        if chapter not in available_chapters:
+            return f"https://tenor.com/view/ken-jeong-community-too-small-to-read-read-reading-gif-5494204"
         matches = matches[matches['chapter'] == chapter]
-        
+    
     if matches.empty:
         if chapter is not None:
             return f"No quotes found matching '{' '.join(words)}' in chapter {chapter}"
@@ -192,8 +196,9 @@ def wordquery(words, limit=10, chapter=None):
         result = versequery(book, chapter, verse)
         
         # Bold all matches of any word pattern
-        for pattern in word_patterns:
-            result = re.sub(pattern, r"**\g<0>**", result, flags=re.IGNORECASE)
+        patterns = [r"\b" + re.escape(phrase) + r"\b" for phrase in words]
+        for pattern in patterns:
+            result = re.sub(pattern, r"**\g<0>**", text, flags=re.IGNORECASE)
         results.append(result)
     
     return "\n\n".join(results)
@@ -201,7 +206,7 @@ def wordquery(words, limit=10, chapter=None):
 # Create MA question
 def multans():
     # MA docs link
-    url = f"https://docs.google.com/spreadsheets/d/e/2PACX-1vSeZ1WU8cIu_viDmGGMypjDOaollcERBgvvVfGyeblh_bLLZ5Lagi8TMn-4t1De8sch2LGY2S99K119/pub?gid=1359126200&single=true&output=csv"
+    url = f"https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1py0jUnXQh2aJ_yChXR60c7zfhFIDWyuZvq0e7zLVR8e1ey63fdVsIyd1zlTd1_ZcJRu_2yU09QsX/pub?gid=1359126200&single=true&output=csv"
     
     # Create a list of questions
     ma_list = pd.read_csv(url)
@@ -223,7 +228,40 @@ def multans():
     prompt += f"\n\n**Answer:**\n||{ans}||\n\n**Verse:**\n||{versequery(book,chapter,verse)}||"
     
     return prompt
+
+def chapref(chapter=None):
+    # CR docs link
+    url = f"https://docs.google.com/spreadsheets/d/e/2PACX-1vSyf5UzUoh-9sSkXs49qbRntKc9sqQbJ3JmiM3usseHN1DCkK-FcSFCBUMwmgsjQi0xQ5oRDS04OJEB/pub?gid=1488963601&single=true&output=csv"
     
+    cr_list = pd.read_csv(url)
+    pool = cr_list["Question"].tolist()
+    
+    # Filter by chapter if specified
+    if chapter is not None:
+       # Extract book and chapter
+       ref_parts = cr_list["Reference"].str.split(r'[: ]', expand=True)
+       cr_list = cr_list[ref_parts[1] == str(chapter)]  # Filter to specific chapter
+
+    # Random selection
+    seed = random.randint(0, len(cr_list) - 1)
+    selected_row = cr_list.iloc[seed]
+    
+    # Split question and get answer
+    select_prompt = selected_row["Question"].split('>>')
+    ans = selected_row.iloc[3]   
+    
+    # TEMPORARY CODE
+    ref = selected_row.iloc[0].replace(' ',':').split(':')
+    ref = [int(x) if x.isdigit() else x for x in ref]
+    book, chapter, verse = ref
+    book = 'Luke'
+    
+    # Generate prompt
+    prompt = select_prompt[0] + f"||{select_prompt[1]}||"
+    prompt += f"\n\n**Answer:**\n||{ans}||\n\n**Verse:**\n||{versequery(book,chapter,verse)}||"
+
+    return prompt
+
 # Find a random one word key
 def keyword1():
     # Split the text into words
@@ -442,6 +480,16 @@ async def kw(ctx, n=0):
     
     prompt += f"\n\n||{wordquery(prompt)}||\n"
     await ctx.send(prompt)
+
+@bot.command()
+async def cr(ctx, args=""):
+    try: 
+        chapter = int(args)
+    except: 
+        chapter = None
+    # Process the query
+    result = chapref(chapter=chapter)
+    await ctx.send(result)  
 
 @bot.command()
 async def f(ctx, *, args=""):
