@@ -198,7 +198,7 @@ def wordquery(words, limit=10, chapter=None):
         # Bold all matches of any word pattern
         patterns = [r"\b" + re.escape(phrase) + r"\b" for phrase in words]
         for pattern in patterns:
-            result = re.sub(pattern, r"**\g<0>**", text, flags=re.IGNORECASE)
+            result = re.sub(pattern, r"**\g<0>**", result, flags=re.IGNORECASE)
         results.append(result)
     
     return "\n\n".join(results)
