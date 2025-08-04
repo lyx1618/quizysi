@@ -42,17 +42,19 @@ track_727_always = False
 
 # Load data
 material = []
-with open("/home/container/luke_plain", "r") as file:
+with open("/home/container/corinthians.txt", "r") as file:
     info = file.read()
 
 verse = info.splitlines()
 for x in verse:
 
-    verse_ref = x.split(":",3)
+    verse_ref = x.split(";",4)
     verse_ref = [int(x) if x.isdigit() else x for x in verse_ref]
-    
-    quote = verse_ref[3].replace('\xa0', '').strip()
-    newverse = dict({"book": verse_ref[0], "chapter": verse_ref[1], "verse": verse_ref[2], "quote": quote})
+
+    quote = verse_ref[4].replace('\xa0', '').strip()
+    book = '1 Corinthians' if verse_ref[0].replace('\ufeff', '').strip() == '1c' else '2 Corinthians'
+
+    newverse = dict({"book": book, "chapter": verse_ref[1], "verse": verse_ref[2], "quote": quote})
     if material.count(newverse) < 1:
         material.append(newverse)
     else:
@@ -289,7 +291,7 @@ def keyword1():
     
     # Return the original words that are unique
     pool = [word for word in cleaned_words if word.lower() in unique_lower_words]
-    pool.pop(-40)
+    #pool.pop(-40)
     
     return pool
     
