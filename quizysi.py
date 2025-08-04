@@ -42,7 +42,7 @@ track_727_always = False
 
 # Load data
 material = []
-with open("/home/container/corinthians.txt", "r") as file:
+with open("/home/container/material/corinthians.txt", "r") as file:
     info = file.read()
 
 verse = info.splitlines()
